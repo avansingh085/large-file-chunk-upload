@@ -1,71 +1,65 @@
 import React from 'react';
-import { File, CloudUpload, Loader2 } from 'lucide-react';
+import { CloudUpload, Pause, Play } from 'lucide-react';
 
 export default function UploadCard({ 
-  file, setFile, onUpload, isUploading, progress, statusMap, metrics, isOnline 
+  file, setFile, onUpload, isUploading, progress, statusMap, metrics, isPaused, togglePause 
 }) {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8 relative overflow-hidden">
-      {/* Offline Overlay */}
-      {!isOnline && isUploading && (
-        <div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center backdrop-blur-[1px]">
-          <div className="bg-white p-4 rounded-xl shadow-lg border border-orange-200 flex flex-col items-center">
-            <Loader2 className="w-8 h-8 text-orange-500 animate-spin mb-2" />
-            <p className="text-sm font-bold text-orange-600">Connection Lost: Pausing...</p>
-          </div>
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8 relative">
+      {isPaused && (
+        <div className="absolute top-2 right-2 px-2 py-1 bg-orange-100 text-orange-600 text-[10px] font-bold rounded uppercase tracking-wider">
+          Paused
         </div>
       )}
 
       {!isUploading ? (
         <div 
-          className="border-2 border-dashed border-gray-300 rounded-lg p-10 text-center hover:border-blue-500 transition-colors cursor-pointer"
+          className="border-2 border-dashed border-gray-300 rounded-lg p-10 text-center hover:border-blue-500 cursor-pointer"
           onClick={() => document.getElementById('fileInput').click()}
         >
-          <CloudUpload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <p className="text-lg font-medium">Click or drag file to upload</p>
-          <input 
-            id="fileInput" 
-            type="file" 
-            className="hidden" 
-            onChange={e => setFile(e.target.files[0])} 
-          />
-          {file && (
-            <div className="mt-4 p-2 bg-blue-50 text-blue-700 rounded text-sm inline-flex items-center">
-              <File size={16} className="mr-2" /> {file.name}
-            </div>
-          )}
+          <CloudUpload className="mx-auto h-12 w-12 text-gray-400 mb-2" />
+          <p className="text-gray-600">Click to select file</p>
+          <input id="fileInput" type="file" className="hidden" onChange={e => setFile(e.target.files[0])} />
+          {file && <p className="mt-2 text-blue-600 text-sm font-medium">{file.name}</p>}
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="flex justify-between items-center text-sm mb-1">
-            <span className={`font-medium ${isOnline ? 'text-blue-600' : 'text-gray-400'}`}>
-              {isOnline ? `Uploading ${file?.name}...` : 'Upload Paused'}
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-semibold text-gray-700">
+              {isPaused ? "Upload Paused" : "Uploading..."}
             </span>
-            <span className="text-gray-500 font-mono">{progress}%</span>
+            
+            <button 
+              type="button"
+              onClick={togglePause}
+              className={`flex items-center gap-1 px-4 py-1.5 rounded-full text-xs font-bold transition-all shadow-sm ${
+                isPaused ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700'
+              }`}
+            >
+              {isPaused ? <><Play size={12} fill="currentColor"/> Resume</> : <><Pause size={12} fill="currentColor"/> Pause</>}
+            </button>
           </div>
-          
-          <div className="w-full bg-gray-100 rounded-full h-3">
+
+          <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
             <div 
-              className={`h-3 rounded-full transition-all duration-500 ${
-                isOnline ? 'bg-blue-600' : 'bg-gray-400 animate-pulse'
-              }`} 
+              className={`h-full transition-all duration-300 ${isPaused ? 'bg-orange-400' : 'bg-blue-600'}`} 
               style={{ width: `${progress}%` }}
             />
           </div>
 
-          <div className="flex gap-4 text-xs text-gray-500">
-            <span>Speed: {isOnline ? metrics.speed : '0.0'} MB/s</span>
-            <span>ETA: {isOnline ? metrics.eta : '--'}s</span>
+          <div className="flex justify-between text-[10px] text-gray-500 font-mono">
+            <span>SPEED: {isPaused ? '0.0' : metrics.speed} MB/s</span>
+            <span>PROGRESS: {progress}%</span>
+            <span>ETA: {isPaused ? '--' : metrics.eta}s</span>
           </div>
-          
-          <div className="flex flex-wrap gap-1 mt-4">
-            {Object.entries(statusMap).map(([idx, status]) => (
+
+          <div className="grid grid-cols-10 gap-1 mt-2">
+            {Object.values(statusMap).map((status, i) => (
               <div 
-                key={idx} 
-                className={`h-2.5 w-2.5 rounded-sm transition-colors ${
+                key={i} 
+                className={`h-1.5 rounded-full ${
                   status === 'SUCCESS' ? 'bg-green-500' : 
-                  status === 'UPLOADING' ? 'bg-blue-400 animate-pulse' : 
-                  'bg-gray-200'
+                  status === 'UPLOADING' ? 'bg-blue-400 animate-pulse' : 'bg-gray-200'
                 }`}
               />
             ))}
@@ -76,10 +70,9 @@ export default function UploadCard({
       {!isUploading && file && (
         <button 
           onClick={onUpload}
-          disabled={!isOnline}
-          className="mt-6 w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 transition-all shadow-md"
+          className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700"
         >
-          {isOnline ? 'Start Upload' : 'Check Connection'}
+          Start Upload
         </button>
       )}
     </div>

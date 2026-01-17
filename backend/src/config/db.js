@@ -17,8 +17,12 @@ async function initDB(retries = 10) {
       CREATE TABLE IF NOT EXISTS uploads (
         id VARCHAR(255) PRIMARY KEY,
         filename VARCHAR(255),
+        total_size BIGINT,
+        total_chunks INT,
         status ENUM('UPLOADING', 'PROCESSING', 'COMPLETED', 'FAILED'),
-        final_hash VARCHAR(64)
+        final_hash VARCHAR(64),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )
     `);
 
