@@ -1,6 +1,11 @@
 # File Upload System - Full Stack Application
 
-A production-ready chunked file upload system with pause/resume, integrity verification, and ZIP preview capabilities.
+![Page 1](screenshot/page1.png)
+![Page 2](screenshot/page2.png)
+![Page 3](screenshot/page3.png)
+![Page 4](screenshot/page4.png)
+
+
 
 ## Features
 - **Chunked Upload**: Files split into 5MB chunks for reliable upload
@@ -86,7 +91,6 @@ A production-ready chunked file upload system with pause/resume, integrity verif
 4. **Compression** - Gzip chunks before upload to reduce bandwidth
 5. **Rate limiting** - Add IP-based rate limiting to prevent abuse
 6. **File size limits** - Enforce max file size at handshake stage
-7. **Virus scanning** - Scan uploaded files with ClamAV or similar
 
 ### Frontend Improvements:
 1. **Drag-and-drop UI** - Better UX for file selection
