@@ -77,8 +77,6 @@
 | **3 concurrent chunks** | Balances network load and server resources | Slower than max concurrency, but stable |
 | **24-hour cleanup grace period** | Allows pause/resume within a day | Incomplete uploads use disk space temporarily |
 | **File stored with uploadId name** | Simple temp file tracking without extra metadata | uploadId folder created if multiple retries on same chunk |
-| **No encryption in transit** | Adds complexity for interview project | HTTPS recommended in production |
-| **In-memory queue** | Paused state lost on browser refresh | User must re-pause after page reload |
 
 ---
 
